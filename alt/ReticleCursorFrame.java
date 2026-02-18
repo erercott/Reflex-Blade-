@@ -1,15 +1,17 @@
- 
 // 1-31-2026
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent; 
 
 public class ReticleCursorFrame extends JFrame {
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 800;
     private float hue = 0.0f; // Starting hue
+    private int cursorMode = 0;
 
     public ReticleCursorFrame() {
         setTitle("Reticle Color Cursor Frame");
@@ -17,6 +19,20 @@ public class ReticleCursorFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setBackground(Color.WHITE);
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    cursorMode++;
+                    if (cursorMode > 2) cursorMode = 0;
+                    updateCursorColor();
+                }
+            }
+        });
+
+        setFocusable(true);
+        requestFocusInWindow();
 
         // Start a timer to change the hue
         Timer timer = new Timer(50, new ActionListener() { // Faster color change
@@ -45,15 +61,21 @@ public class ReticleCursorFrame extends JFrame {
         BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
 
-        // Draw reticle lines
         g2d.setColor(Color.getHSBColor(hue, 1.0f, 1.0f));
         g2d.setStroke(new BasicStroke(2f));
 
-        // Horizontal line
-        g2d.drawLine(0, 8, 16, 8);
-        // Vertical line
-        g2d.drawLine(8, 0, 8, 16);
-        
+        if (cursorMode == 0) {
+            g2d.drawLine(0, 8, 16, 8);
+            g2d.drawLine(8, 0, 8, 16);
+        } else if (cursorMode == 1) {
+            g2d.drawLine(0, 0, 16, 16);
+            g2d.drawLine(16, 0, 0, 16);
+        } else if (cursorMode == 2) {
+            g2d.drawLine(0, 0, 8, 8);
+            g2d.drawLine(16, 0, 8, 8);
+            g2d.drawLine(8, 8, 8, 16);
+        }
+
         g2d.dispose();
         return image;
     }
@@ -62,6 +84,7 @@ public class ReticleCursorFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             ReticleCursorFrame frame = new ReticleCursorFrame();
             frame.setVisible(true);
+            frame.requestFocusInWindow(); // ensure key input works
         });
     }
 }
