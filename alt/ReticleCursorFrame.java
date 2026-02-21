@@ -8,14 +8,21 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent; 
 import javax.imageio.ImageIO;  
 import java.io.IOException; 
+import java.util.Random; 
+import java.util.List; 
+import java.util.ArrayList; 
+import java.io.File;
 
-BufferedImage[][] enemyImages = new BufferedImage[3][3];
 
 public class ReticleCursorFrame extends JFrame {
+	BufferedImage[][] enemyImages = new BufferedImage[3][3];
+	private List<Enemy> enemies = new ArrayList<>();
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 800;
     private float hue = 0.0f; // Starting hue
     private int cursorMode = 0;
+	
+	
 
     public ReticleCursorFrame() {
         setTitle("Reticle Color Cursor Frame");
@@ -37,16 +44,16 @@ public class ReticleCursorFrame extends JFrame {
 
         setFocusable(true);
         requestFocusInWindow();
-
-        // Start a timer to change the hue
-        Timer timer = new Timer(50, new ActionListener() { // Faster color change
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateCursorColor();
-            }
-        });
-        timer.start();
-    }
+		
+		loadEnemyImages(); 
+		spawnEnemies(); 
+		
+		Timer cursorTimer = new Timer(50, e -> updateCursorColor());
+		cursorTimer.start(); 
+		
+		Timer repaintTimer = new Timer(100, e -> repaint());
+		repaintTimer.start();
+	}
 
     private void updateCursorColor() {
         hue += 0.05f; // Increase speed of color rotation
@@ -98,12 +105,30 @@ public class ReticleCursorFrame extends JFrame {
 			}
 		}catch (IOException e){
 		e.printStackTrace();
+		}	
+	}
+	@Override 
+		public void paint(Graphics g){
+			super.paint(g);
+			for (Enemy e : enemies){
+			BufferedImage img = enemyImages[e.getType()][e.getCurrentFrame()];
+			g.drawImage(img, e.getX(), e.getY(), null);
+			e.updateAnimation();
+			}
+		}
+		public void spawnEnemies(){
+		Random rand = new Random();
+		for (int type = 0; type < 3; type++){
+			for (int i= 0; i <3; i++){
+			int x = rand.nextInt(FRAME_WIDTH - 50);
+			int y = rand.nextInt(FRAME_HEIGHT - 50);
+			enemies.add(new Enemy(type, x, y, 3));
+			}
 		}
 	}
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ReticleCursorFrame frame = new ReticleCursorFrame();
-			frame.loadEnemyImages();
             frame.setVisible(true);
             frame.requestFocusInWindow();// ensure key input works
         });
