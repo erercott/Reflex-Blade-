@@ -94,9 +94,9 @@ public class ReticleCursorFrame extends JFrame {
 					enemyImages[type][frame] = ImageIO.read(
 					new File("enemy" + type + "_" + frame + ".png")
 				);
+				}
 			}
-		}
-	} catch (IOException e){
+		}catch (IOException e){
 		e.printStackTrace();
 		}
 	}
