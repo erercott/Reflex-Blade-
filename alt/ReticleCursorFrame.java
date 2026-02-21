@@ -18,7 +18,7 @@ public class ReticleCursorFrame extends JFrame {
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setBackground(Color.WHITE);
+        setBackground(Color.BLACK);
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -65,15 +65,19 @@ public class ReticleCursorFrame extends JFrame {
         g2d.setStroke(new BasicStroke(2f));
 
         if (cursorMode == 0) {
-            g2d.drawLine(0, 8, 16, 8);
-            g2d.drawLine(8, 0, 8, 16);
+            g2d.drawLine(0, 8, 4, 8);
+            g2d.drawLine(11, 8, 15, 8);
+			g2d.drawLine(8,0,8,4);
+			g2d.drawLine(8,11,8,15);
         } else if (cursorMode == 1) {
-            g2d.drawLine(0, 0, 16, 16);
-            g2d.drawLine(16, 0, 0, 16);
+            g2d.drawLine(0, 0, 6, 6);
+			g2d.drawLine(9, 9, 15, 15);
+			g2d.drawLine(15,0,9,6);
+			g2d.drawLine(6,9,0,15);
         } else if (cursorMode == 2) {
-            g2d.drawLine(0, 0, 8, 8);
-            g2d.drawLine(16, 0, 8, 8);
-            g2d.drawLine(8, 8, 8, 16);
+            g2d.drawLine(0, 0, 6, 6);
+            g2d.drawLine(15, 0, 9, 6);
+            g2d.drawLine(8, 9, 8, 15);
         }
 
         g2d.dispose();
