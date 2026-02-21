@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent; 
+import javax.imageio.ImageIO;  
+import java.io.IOException; 
+
+BufferedImage[][] enemyImages = new BufferedImage[3][3];
 
 public class ReticleCursorFrame extends JFrame {
     private static final int FRAME_WIDTH = 800;
@@ -83,12 +87,25 @@ public class ReticleCursorFrame extends JFrame {
         g2d.dispose();
         return image;
     }
-
+	public void loadEnemyImages() {
+		try {
+			for (int type = 0; type < 3; type++){
+				for (int frame = 0; frame <3; frame++){
+					enemyImages[type][frame] = ImageIO.read(
+					new File("enemy" + type + "_" + frame + ".png")
+				);
+			}
+		}
+	} catch (IOException e){
+		e.printStackTrace();
+		}
+	}
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ReticleCursorFrame frame = new ReticleCursorFrame();
+			frame.loadEnemyImages();
             frame.setVisible(true);
-            frame.requestFocusInWindow(); // ensure key input works
+            frame.requestFocusInWindow();// ensure key input works
         });
     }
 }
