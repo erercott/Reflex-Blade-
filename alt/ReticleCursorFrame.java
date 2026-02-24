@@ -15,12 +15,13 @@ import java.io.File;
 
 
 public class ReticleCursorFrame extends JFrame {
-	BufferedImage[][] enemyImages = new BufferedImage[3][3];
-	private List<Enemy> enemies = new ArrayList<>();
+	private ArrayList<BufferedImage> enemyImages = new ArrayList<>();
+	private ArrayList<Enemy> enemies = new ArrayList<>();
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 800;
     private float hue = 0.0f; // Starting hue
     private int cursorMode = 0;
+	
 	
 	
 
@@ -44,9 +45,18 @@ public class ReticleCursorFrame extends JFrame {
 
         setFocusable(true);
         requestFocusInWindow();
-		
+		try {
 		loadEnemyImages(); 
+		} catch (IOException e){
+			e.printStackTrace();
+			//optional message 
+			JOptionPane.showMessageDialog(null, "Failed to load enemy images");
+			System.exit(1);
+		}
 		spawnEnemies(); 
+		GamePanel gamePanel = new GamePanel(); 
+		setContentPane(gamePanel);
+		
 		
 		Timer cursorTimer = new Timer(50, e -> updateCursorColor());
 		cursorTimer.start(); 
@@ -94,28 +104,27 @@ public class ReticleCursorFrame extends JFrame {
         g2d.dispose();
         return image;
     }
-	public void loadEnemyImages() {
-		try {
-			for (int type = 0; type < 3; type++){
-				for (int frame = 0; frame <3; frame++){
-					enemyImages[type][frame] = ImageIO.read(
-					new File("enemy" + type + "_" + frame + ".png")
-				);
-				}
-			}
-		}catch (IOException e){
-		e.printStackTrace();
-		}	
+	public void loadEnemyImages() throws IOException {
+		enemyImages.add(ImageIO.read(new File("../img/enemy.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy1.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy3.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy4.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy5.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy6.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy7.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy8.png")));
+		enemyImages.add(ImageIO.read(new File("../img/enemy9.png")));
 	}
+	class GamePanel extends JPanel {
 	@Override 
-		public void paint(Graphics g){
-			super.paint(g);
-			for (Enemy e : enemies){
-			BufferedImage img = enemyImages[e.getType()][e.getCurrentFrame()];
-			g.drawImage(img, e.getX(), e.getY(), null);
-			e.updateAnimation();
+		public void paintComponent(Graphics g){
+			super.paintComponent(g);
+			for (Enemy e : enemies) {
+				g.drawImage(enemyImages.get(e.getType()), e.getX(), e.getY(), null);
 			}
+			
 		}
+	}
 		public void spawnEnemies(){
 		Random rand = new Random();
 		for (int type = 0; type < 3; type++){
