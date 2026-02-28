@@ -126,15 +126,14 @@ public class ReticleCursorFrame extends JFrame {
 		}
 	}
 		public void spawnEnemies(){
-		Random rand = new Random();
-		for (int type = 0; type < 3; type++){
-			for (int i= 0; i <3; i++){
+			Random rand = new Random();
+			for (int i= 0; i < 9; i++){
+			int type = rand.nextInt(enemyImages.size());
 			int x = rand.nextInt(FRAME_WIDTH - 50);
 			int y = rand.nextInt(FRAME_HEIGHT - 50);
 			enemies.add(new Enemy(type, x, y, 3));
 			}
 		}
-	}
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ReticleCursorFrame frame = new ReticleCursorFrame();
